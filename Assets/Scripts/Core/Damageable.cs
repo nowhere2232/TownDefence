@@ -22,4 +22,9 @@ public abstract class Damageable : MonoBehaviour
         if (CurrentHp <= 0)
             OnDied?.Invoke(this);
     }
+
+    public void ResetHp()
+    {
+        CurrentHp = MaxHp;
+    }
 }

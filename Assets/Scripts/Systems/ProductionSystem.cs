@@ -1,16 +1,26 @@
+using System.Collections;
 using UnityEngine;
 
 public class ProductionSystem : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public GameConfig Config;
+    public ResourceManager Resources;
+    public UnitRegistry Registry;
+
     void Start()
     {
-        
+        StartCoroutine(ProduceRoutine());
     }
 
-    // Update is called once per frame
-    void Update()
+    private IEnumerator ProduceRoutine()
     {
-        
+        while (true)
+        {
+            yield return new WaitForSeconds(Config.ProductionTickSeconds);
+
+            int peasants = Registry.GetAliveUnits(UnitType.Peasant).Count;
+            if (peasants > 0)
+                Resources.AddWheat(peasants * Config.ProductionPerPeasantPerTick);
+        }
     }
 }

@@ -2,15 +2,43 @@ using UnityEngine;
 
 public class UnitFactory : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public GameConfig Config;
+    public UnitRegistry Registry;
+
+    [Header("Prefabs")]
+    public GameObject WarriorPrefab;
+    public GameObject PeasantPrefab;
+    public GameObject EnemyPrefab;
+
+    public Unit SpawnUnit(UnitType type)
     {
-        
+        var prefab = type == UnitType.Warrior ? WarriorPrefab : PeasantPrefab;
+        Vector3 basePos = type == UnitType.Warrior
+            ? Config.WarriorSpawnPoint
+            : Config.PeasantSpawnPoint;
+
+        var go = Instantiate(prefab, basePos + RandomJitter(), Quaternion.identity);
+        var unit = go.GetComponent<Unit>();
+        Registry.RegisterUnit(unit);
+        return unit;
     }
 
-    // Update is called once per frame
-    void Update()
+    public Enemy SpawnEnemy(EnemyConfig overrideConfig = null)
     {
-        
+        var go = Instantiate(EnemyPrefab, Config.EnemySpawnpoint + RandomJitter(), Quaternion.identity);
+        var enemy = go.GetComponent<Enemy>();
+        if (overrideConfig != null)
+        {
+            enemy.Config = overrideConfig;
+            enemy.ResetHp();
+        }
+        Registry.RegisterEnemy(enemy);
+        return enemy;
+    }
+
+    private Vector3 RandomJitter()
+    {
+        var v = Random.insideUnitCircle * Config.SpawnJitterRadius;
+        return new Vector3(v.x, v.y, 0f);
     }
 }
