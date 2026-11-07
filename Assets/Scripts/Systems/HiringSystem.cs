@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using UnityEngine;
 
 public class HiringSystem : MonoBehaviour
@@ -10,8 +9,10 @@ public class HiringSystem : MonoBehaviour
 
     private int _warriorQueue;
     private int _peasantQueue;
-    private Coroutine _warriorRoutine;
-    private Coroutine _peasantRoutine;
+    private float _warriorTimer;
+    private float _peasantTimer;
+    private bool _isHiringWarrior;
+    private bool _isHiringPeasant;
 
     public event Action OnQueuesChanged;
 
@@ -38,40 +39,58 @@ public class HiringSystem : MonoBehaviour
         if (type == UnitType.Warrior)
         {
             _warriorQueue++;
-            if (_warriorRoutine == null)
-                _warriorRoutine = StartCoroutine(HireRoutine(UnitType.Warrior));
+            if (!_isHiringWarrior)
+            {
+                _isHiringWarrior = true;
+                _warriorTimer = cfg.HireTime;
+            }
         }
         else
         {
             _peasantQueue++;
-            if (_peasantRoutine == null)
-                _peasantRoutine = StartCoroutine(HireRoutine(UnitType.Peasant));
+            if (!_isHiringPeasant)
+            {
+                _isHiringPeasant = true;
+                _peasantTimer = cfg.HireTime;
+            }
         }
 
         OnQueuesChanged?.Invoke();
     }
 
-    private IEnumerator HireRoutine(UnitType type)
+    void Update()
     {
-        var cfg = GetConfig(type);
-
-        while (GetQueueCount(type) > 0)
+        if (_isHiringWarrior)
         {
-            yield return new WaitForSeconds(cfg.HireTime);
-
-            if (type == UnitType.Warrior)
+            _warriorTimer -= Time.deltaTime;
+            if (_warriorTimer <= 0f)
+            {
                 _warriorQueue--;
-            else
-                _peasantQueue--;
+                Factory.SpawnUnit(UnitType.Warrior);
+                OnQueuesChanged?.Invoke();
 
-            Factory.SpawnUnit(type);
-            OnQueuesChanged?.Invoke();
+                if (_warriorQueue > 0)
+                    _warriorTimer = Config.WarriorConfig.HireTime;
+                else
+                    _isHiringWarrior = false;
+            }
         }
 
-        if (type == UnitType.Warrior)
-            _warriorRoutine = null;
-        else
-            _warriorRoutine = null;
+        if (_isHiringPeasant)
+        {
+            _peasantTimer -= Time.deltaTime;
+            if (_peasantTimer <= 0f)
+            {
+                _peasantQueue--;
+                Factory.SpawnUnit(UnitType.Peasant);
+                OnQueuesChanged?.Invoke();
+
+                if (_peasantQueue > 0)
+                    _peasantTimer = Config.PeasantConfig.HireTime;
+                else
+                    _isHiringPeasant = false;
+            }
+        }
     }
 
     private UnitConfig GetConfig(UnitType type) => type == UnitType.Warrior ? Config.WarriorConfig : Config.PeasantConfig;

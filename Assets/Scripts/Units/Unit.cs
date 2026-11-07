@@ -47,11 +47,9 @@ public class Unit : Damageable
     {
         if (!Config.ConsumesFood || IsDead)
             return 0;
-        if (CurrentSatiety >= Config.MaxSatiety)
-            return 0;
 
         int need = Mathf.CeilToInt(Config.FoodPerTick);
-        if (CurrentSatiety < Config.MaxSatiety && availableWheat >= need)
+        if (availableWheat >= need)
         {
             CurrentSatiety = Mathf.Min(Config.MaxSatiety, CurrentSatiety + Config.SatietyPerMeal);
             return need;
