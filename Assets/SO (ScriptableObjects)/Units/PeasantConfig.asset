@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53a1d13549f219548a03e8d8305534b7, type: 3}
+  m_Name: PeasantConfig
+  m_EditorClassIdentifier: Assembly-CSharp::UnitConfig
+  Type: 0
+  MaxHp: 40
+  Damage: 5
+  AttackCooldown: 1.5
+  AttackRange: 0.5
+  MoveSpeed: 1.2
+  HireCost: 10
+  HireTime: 3
+  ConsumesFood: 0
+  MaxSatiety: 100
+  FoodPerTick: 5
+  SatietyPerMeal: 20
+  SatietyDrainOnHunger: 10
