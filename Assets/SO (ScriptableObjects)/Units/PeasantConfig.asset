@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53a1d13549f219548a03e8d8305534b7, type: 3}
   m_Name: PeasantConfig
   m_EditorClassIdentifier: Assembly-CSharp::UnitConfig
-  Type: 0
+  Type: 1
   MaxHp: 40
   Damage: 5
   AttackCooldown: 1.5
