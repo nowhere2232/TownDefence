@@ -22,8 +22,13 @@ public abstract class Damageable : MonoBehaviour
         if (CurrentHp <= 0)
         {
             OnDied?.Invoke(this);
-            Destroy(gameObject);
+            Die();
         }
+    }
+
+    protected virtual void Die()
+    {
+        Destroy(gameObject);
     }
 
     public void ResetHp()

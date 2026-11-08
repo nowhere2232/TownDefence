@@ -9,10 +9,17 @@ public class Enemy : Damageable
     public Structure TargetStructure { get; set; }
 
     private float _attackTimer;
+    private UnitAnimator _animator;
 
     void Awake()
     {
         InitHp();
+        _animator = GetComponent<UnitAnimator>();
+    }
+
+    void Start()
+    {
+        _animator?.PlaySpawn();
     }
 
     void Update()
@@ -40,10 +47,15 @@ public class Enemy : Damageable
             if (_attackTimer <= 0f)
             {
                 _attackTimer = Config.AttackCooldown;
+                Vector2 dir = (TargetUnit != null && !TargetUnit.IsDead)
+                    ? (Vector2)(TargetUnit.transform.position - transform.position)
+                    : (TargetStructure != null ? (Vector2)(TargetStructure.transform.position - transform.position) : Vector2.zero);
                 if (TargetUnit != null && !TargetUnit.IsDead)
                     TargetUnit.TakeDamage(Config.Damage);
                 else if (TargetStructure != null && !TargetStructure.IsDead)
                     TargetStructure.TakeDamage(Config.Damage);
+                if (dir != Vector2.zero)
+                    _animator?.PlayPunch(dir);
             }
         }
     }
@@ -65,5 +77,13 @@ public class Enemy : Damageable
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(transform.position, 0.3f);
         }
+    }
+
+    protected override void Die()
+    {
+        if (_animator != null)
+            _animator.PlayDeath(() => Destroy(gameObject));
+        else
+            Destroy(gameObject);
     }
 }

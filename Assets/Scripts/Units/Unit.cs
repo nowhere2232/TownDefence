@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public class Unit : Damageable
@@ -10,11 +11,18 @@ public class Unit : Damageable
     public Enemy Target { get; set; }
 
     private float _attackTimer;
+    private UnitAnimator _animator;
 
     void Awake()
     {
         InitHp();
+        _animator = GetComponent<UnitAnimator>();
         CurrentSatiety = Config.ConsumesFood ? Config.MaxSatiety : 0f;
+    }
+
+    void Start()
+    {
+        _animator?.PlaySpawn();
     }
 
     void Update()
@@ -38,7 +46,9 @@ public class Unit : Damageable
             if (_attackTimer <= 0f)
             {
                 _attackTimer = Config.AttackCooldown;
+                Vector2 dir = Target.transform.position - transform.position;
                 Target.TakeDamage(Config.Damage);
+                _animator?.PlayPunch(dir);
             }
         }
     }
@@ -59,5 +69,13 @@ public class Unit : Damageable
         if (CurrentSatiety <= 0f)
             TakeDamage(MaxHp); // суицид
         return 0;
+    }
+
+    protected override void Die()
+    {
+        if (_animator != null)
+            _animator.PlayDeath(() => Destroy(gameObject));
+        else
+            Destroy(gameObject);
     }
 }
