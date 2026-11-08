@@ -9,6 +9,7 @@ public class WaveSystem : MonoBehaviour
     [SerializeField] private GameManager _gameManager;
 
     public int CurrentWave { get; private set; }
+    public float NextWaveTime { get; private set; } = -1f;
     public event Action<int, int> OnWaveStarted;
     public event Action<int> OnWaveCleared;
 
@@ -21,10 +22,12 @@ public class WaveSystem : MonoBehaviour
 
     private IEnumerator WaveLoop()
     {
+        NextWaveTime = Time.time + _config.TimeBeforeFirstWave;
         yield return new WaitForSeconds(_config.TimeBeforeFirstWave);
 
         for (CurrentWave = 1; CurrentWave <= _config.TotalWaves; CurrentWave++)
         {
+            NextWaveTime = -1f;
             OnWaveStarted?.Invoke(CurrentWave, _config.TotalWaves);
 
             yield return SpawnWaveRoutine(CurrentWave);
@@ -40,6 +43,7 @@ public class WaveSystem : MonoBehaviour
                 yield break;
             }
 
+            NextWaveTime = Time.time + _config.TimeBetweenWaves;
             yield return new WaitForSeconds(_config.TimeBetweenWaves);
         }
     }
