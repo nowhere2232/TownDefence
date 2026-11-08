@@ -10,13 +10,27 @@ public class GameManager : MonoBehaviour
     public UnitRegistry Registry;
     public Village Village;
 
-    public GameState State { get; private set; } = GameState.Playing;
+    public GameState State { get; private set; } = GameState.Start;
     public event Action<GameState> OnStateChanged;
+
+    void Awake()
+    {
+        State = GameState.Start;
+        Time.timeScale = 0f;
+        Resources.Init(Config.StartingWheat);
+    }
 
     void Start()
     {
-        Resources.Init(Config.StartingWheat);
         Village.OnAllStructuresDestroyed += () => EndGame(GameState.Defeat);
+    }
+
+    public void StartGame()
+    {
+        if (State != GameState.Start)
+            return;
+        Time.timeScale = 1f;
+        SetState(GameState.Playing);
     }
 
     public void Pause()
