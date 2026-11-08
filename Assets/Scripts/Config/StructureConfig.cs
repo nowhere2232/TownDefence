@@ -8,4 +8,6 @@ public class StructureConfig : ScriptableObject
 
     [Header("Combat")]
     public float MaxHp = 500f;
+
+    public bool VerticalHpBar = false;
 }

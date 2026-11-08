@@ -9,6 +9,7 @@ public class Structure : Damageable
     public Transform HpBarFill;
 
     private float _hpBarFullWidth;
+    private float _hpBarFullHeight;
     private Vector3 _hpBarFullCenter;
 
     void Awake()
@@ -17,6 +18,7 @@ public class Structure : Damageable
         if (HpBarFill != null )
         {
             _hpBarFullWidth = HpBarFill.localScale.x;
+            _hpBarFullHeight = HpBarFill.localScale.y;
             _hpBarFullCenter = HpBarFill.localPosition;
         }
         UpdateHpBar();
@@ -35,11 +37,21 @@ public class Structure : Damageable
         float ratio = MaxHp > 0f ? CurrentHp / MaxHp : 0f;
 
         var s = HpBarFill.localScale;
-        s.x = _hpBarFullWidth * Mathf.Clamp01(ratio);
-        HpBarFill.localScale = s;
-
         var p = _hpBarFullCenter;
-        p.x -= (_hpBarFullWidth - s.x) * 0.5f;
-        HpBarFill.localPosition = p;
+
+        if (Config.VerticalHpBar)
+        {
+            s.y = _hpBarFullHeight * Mathf.Clamp01(ratio);
+            HpBarFill.localScale = s;
+            p.y = _hpBarFullCenter.y - (_hpBarFullHeight - s.y) * 0.5f;
+            HpBarFill.localPosition = p;
+        }
+        else
+        {
+            s.x = _hpBarFullWidth * Mathf.Clamp01(ratio);
+            HpBarFill.localScale = s;
+            p.x = _hpBarFullCenter.x - (_hpBarFullWidth - s.x) * 0.5f;
+            HpBarFill.localPosition = p;
+        }
     }
 }

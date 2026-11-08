@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StructureConfig
   Type: 1
   MaxHp: 300
+  VerticalHpBar: 1
