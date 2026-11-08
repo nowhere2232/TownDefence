@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,13 +6,20 @@ public class Village : MonoBehaviour
 {
     public List<Structure> structures = new();
 
-    public event System.Action OnAllStructuresDestroyed;
+    public event Action OnAllStructuresDestroyed;
+    public event Action OnStructureDied;
     private bool _defeatFired;
 
     void Awake()
     {
         foreach (var s in structures)
-            s.OnDied += _ => CheckAllDead();
+            s.OnDied += HandleStructureDied;
+    }
+
+    private void HandleStructureDied(Damageable d)
+    {
+        OnStructureDied?.Invoke();
+        CheckAllDead();
     }
 
     private void CheckAllDead()

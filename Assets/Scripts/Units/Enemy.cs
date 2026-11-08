@@ -47,4 +47,23 @@ public class Enemy : Damageable
             }
         }
     }
+
+    private void OnDrawGizmos()
+    {
+        if (TargetUnit != null && !TargetUnit.IsDead)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawLine(transform.position, TargetUnit.transform.position);
+        }
+        else if (TargetStructure != null && !TargetStructure.IsDead)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(transform.position, TargetStructure.transform.position);
+        }
+        else
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position, 0.3f);
+        }
+    }
 }

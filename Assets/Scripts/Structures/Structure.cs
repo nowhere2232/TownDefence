@@ -35,7 +35,7 @@ public class Structure : Damageable
         float ratio = MaxHp > 0f ? CurrentHp / MaxHp : 0f;
 
         var s = HpBarFill.localScale;
-        s.x = Mathf.Clamp01(ratio);
+        s.x = _hpBarFullWidth * Mathf.Clamp01(ratio);
         HpBarFill.localScale = s;
 
         var p = _hpBarFullCenter;

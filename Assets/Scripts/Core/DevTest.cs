@@ -30,15 +30,15 @@ public class DevTest : MonoBehaviour
         int peasants = Registry.GetAliveUnits(UnitType.Peasant).Count;
         int enemies = Registry.GetAliveEnemies().Count;
 
-       // string waveInfo = WaveSystem != null
-           // ? $"wave={WaveSystem.CurrentWave}"
-           // : "wave=n/a";
+        string waveInfo = WaveSystem != null
+            ? $"wave={WaveSystem.CurrentWave}"
+            : "wave=n/a";
 
         print(
             $"wheat={Resources.Wheat} | " +
             $"warriors+{warriors} (queue={Hiring.GetQueueCount(UnitType.Warrior)}) | " +
-            $"peasants+{peasants} (queue={Hiring.GetQueueCount(UnitType.Peasant)}) | " 
-         //   $"enemies={enemies} | {waveInfo}"
+            $"peasants+{peasants} (queue={Hiring.GetQueueCount(UnitType.Peasant)}) | " +
+            $"enemies={enemies} | {waveInfo}"
         );
     }
 }

@@ -20,7 +20,10 @@ public abstract class Damageable : MonoBehaviour
             return;
         CurrentHp = Mathf.Max(0f, CurrentHp - amount);
         if (CurrentHp <= 0)
+        {
             OnDied?.Invoke(this);
+            Destroy(gameObject);
+        }
     }
 
     public void ResetHp()

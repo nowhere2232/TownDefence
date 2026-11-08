@@ -9,6 +9,7 @@ public class TargetingSystem : MonoBehaviour
     {
         Registry.OnUnitsChanged += Reassign;
         Registry.OnEnemiesChanged += Reassign;
+        Village.OnStructureDied += Reassign;
     }
 
     private void Reassign()
