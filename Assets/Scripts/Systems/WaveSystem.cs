@@ -2,9 +2,21 @@ using System;
 using System.Collections;
 using UnityEngine;
 
+public struct WavePreview
+{
+    public int WaveNumber;
+    public int EnemyCount;
+    public bool IsBoss;
+    public float HpMult;
+    public float DamageMult;
+    public float SpeedMilt;
+    public float ScaleMult;
+}
+
 public class WaveSystem : MonoBehaviour
 {
     [SerializeField] private GameConfig _config;
+    [SerializeField] private EnemyConfig _enemyConfig;
     [SerializeField] private UnitFactory _factory;
     [SerializeField] private GameManager _gameManager;
 
@@ -15,10 +27,7 @@ public class WaveSystem : MonoBehaviour
 
     private int _aliveEnemiesThisWave;
 
-    void Start()
-    {
-        StartCoroutine(WaveLoop());
-    }
+    void Start() => StartCoroutine(WaveLoop());
 
     private IEnumerator WaveLoop()
     {
@@ -43,6 +52,13 @@ public class WaveSystem : MonoBehaviour
                 yield break;
             }
 
+            if (CurrentWave % _config.BossWaveInterval == 0)
+            {
+                _gameManager.EnterMilestone();
+                while (_gameManager.State == GameState.Milestone)
+                    yield return null;
+            }
+
             NextWaveTime = Time.time + _config.TimeBetweenWaves;
             yield return new WaitForSeconds(_config.TimeBetweenWaves);
         }
@@ -50,7 +66,8 @@ public class WaveSystem : MonoBehaviour
 
     private IEnumerator SpawnWaveRoutine(int waveIndex)
     {
-        int count = _config.EnemiesPerWave[waveIndex - 1];
+        var preview = GetWavePreview(waveIndex);
+        int count = preview.EnemyCount;
         if (count <= 0) 
             yield break;
 
@@ -59,7 +76,7 @@ public class WaveSystem : MonoBehaviour
 
         for (int i = 0; i < count; i++)
         {
-            var enemy = _factory.SpawnEnemy(CurrentWave);
+            var enemy = _factory.SpawnEnemy(preview.HpMult, preview.DamageMult, preview.SpeedMilt, preview.ScaleMult);
             _aliveEnemiesThisWave++;
             enemy.OnDied += HandleEnemyDied;
 
@@ -71,5 +88,10 @@ public class WaveSystem : MonoBehaviour
     private void HandleEnemyDied(Damageable dead)
     {
         _aliveEnemiesThisWave = Mathf.Max(0, _aliveEnemiesThisWave - 1);
+    }
+
+    public WavePreview GetWavePreview(int waveIndex)
+    {
+        
     }
 }
