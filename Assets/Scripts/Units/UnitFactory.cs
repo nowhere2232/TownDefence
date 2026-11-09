@@ -23,15 +23,20 @@ public class UnitFactory : MonoBehaviour
         return unit;
     }
 
-    public Enemy SpawnEnemy(EnemyConfig overrideConfig = null)
+    public Enemy SpawnEnemy(int waveIndex, EnemyConfig overrideConfig = null)
     {
         var go = Instantiate(EnemyPrefab, Config.EnemySpawnpoint + RandomJitter(), Quaternion.identity);
         var enemy = go.GetComponent<Enemy>();
         if (overrideConfig != null)
         {
             enemy.Config = overrideConfig;
-            enemy.ResetHp();
         }
+
+        float hpMult = 1f + (waveIndex - 1) * enemy.Config.HpScalePerWave;
+        float dmgMult = 1f + (waveIndex - 1) * enemy.Config.DamageScalePerWave;
+        float spdMult = 1f + (waveIndex - 1) * enemy.Config.SpeedScalePerWave;
+        enemy.ApplyScaling(hpMult, dmgMult, spdMult);
+
         Registry.RegisterEnemy(enemy);
         return enemy;
     }

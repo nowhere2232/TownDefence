@@ -59,7 +59,7 @@ public class WaveSystem : MonoBehaviour
 
         for (int i = 0; i < count; i++)
         {
-            var enemy = _factory.SpawnEnemy();
+            var enemy = _factory.SpawnEnemy(CurrentWave);
             _aliveEnemiesThisWave++;
             enemy.OnDied += HandleEnemyDied;
 
