@@ -23,15 +23,12 @@ public class UnitFactory : MonoBehaviour
         return unit;
     }
 
-    public Enemy SpawnEnemy(EnemyConfig overrideConfig = null)
+    public Enemy SpawnEnemy(float hpMult, float dmgMult, float spdMult, float scaleMult)
     {
         var go = Instantiate(EnemyPrefab, Config.EnemySpawnpoint + RandomJitter(), Quaternion.identity);
         var enemy = go.GetComponent<Enemy>();
-        if (overrideConfig != null)
-        {
-            enemy.Config = overrideConfig;
-            enemy.ResetHp();
-        }
+        enemy.ApplyScaling(hpMult, dmgMult, spdMult);
+        go.transform.localScale = Vector3.one * scaleMult;
         Registry.RegisterEnemy(enemy);
         return enemy;
     }

@@ -41,6 +41,22 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0f;
     }
 
+    public void EnterMilestone()
+    {
+        if (State != GameState.Playing)
+            return;
+        SetState(GameState.Milestone);
+        Time.timeScale = 0f;
+    }
+
+    public void ContinueMilestone()
+    {
+        if (State != GameState.Milestone) 
+            return;
+        Time.timeScale = 1f;
+        SetState(GameState.Playing);
+    }
+
     public void Resume()
     {
         if (State != GameState.Paused)

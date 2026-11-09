@@ -3,7 +3,10 @@ using UnityEngine;
 public class Enemy : Damageable
 {
     public EnemyConfig Config;
-    public override float MaxHp => Config.MaxHp;
+    private float _hpMult = 1f;
+    private float _damageMult = 1f;
+    private float _speedMult = 1f;
+    public override float MaxHp => Config.MaxHp * _hpMult;
 
     public Unit TargetUnit { get; set; }
     public Structure TargetStructure { get; set; }
@@ -38,8 +41,7 @@ public class Enemy : Damageable
         float dist = Vector2.Distance(transform.position, targetPos);
         if (dist > Config.AttackRange)
         {
-            transform.position = Vector2.MoveTowards(
-                transform.position, targetPos, Config.MoveSpeed * Time.deltaTime);
+            transform.position = Vector2.MoveTowards(transform.position, targetPos, Config.MoveSpeed * _speedMult * Time.deltaTime);
         }
         else
         {
@@ -51,13 +53,21 @@ public class Enemy : Damageable
                     ? (Vector2)(TargetUnit.transform.position - transform.position)
                     : (TargetStructure != null ? (Vector2)(TargetStructure.transform.position - transform.position) : Vector2.zero);
                 if (TargetUnit != null && !TargetUnit.IsDead)
-                    TargetUnit.TakeDamage(Config.Damage);
+                    TargetUnit.TakeDamage(Config.Damage * _damageMult);
                 else if (TargetStructure != null && !TargetStructure.IsDead)
-                    TargetStructure.TakeDamage(Config.Damage);
+                    TargetStructure.TakeDamage(Config.Damage * _damageMult);
                 if (dir != Vector2.zero)
                     _animator?.PlayPunch(dir);
             }
         }
+    }
+
+    public void ApplyScaling(float HpMult, float DamageMult, float SpeedMult)
+    {
+        _hpMult = HpMult;
+        _damageMult = DamageMult;
+        _speedMult = SpeedMult;
+        ResetHp();
     }
 
     private void OnDrawGizmos()

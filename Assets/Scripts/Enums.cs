@@ -3,6 +3,7 @@ public enum GameState
     Start,
     Playing,
     Paused,
+    Milestone,
     Victory,
     Defeat
 }

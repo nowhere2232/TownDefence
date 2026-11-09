@@ -12,4 +12,9 @@ public class EnemyConfig : ScriptableObject
     public float AttackCooldown = 1.5f;
     public float AttackRange = 0.5f;
     public float MoveSpeed = 1f;
+
+    [Header("Wave scaling")]
+    public float HpScalePerWave = 0.08f; // +8%
+    public float DamageScalePerWave = 0.05f; // +5%
+    public float SpeedScalePerWave = 0.005f; // +0.5%
 }

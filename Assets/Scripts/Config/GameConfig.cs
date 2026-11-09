@@ -20,11 +20,33 @@ public class GameConfig : ScriptableObject
     public int MaxQueueLength = 10; // лимит наймов за раз
 
     [Header("Waves")]
-    public int TotalWaves = 20;
+    public int TotalWaves = 50;
     public float TimeBeforeFirstWave = 10f;
     public float TimeBetweenWaves = 5f;
     public float WaveSpawnDuration = 10f;
-    public int[] EnemiesPerWave = { 3, 5, 8, 10, 15, 18, 22, 25, 30, 40, 45, 50, 55, 60, 70, 75, 80, 90, 100, 120};
+
+    [Header("Boss waves")]
+    public int BossWaveInterval = 10;
+    public int BossCount = 1;
+    public float BossHpMulti = 5f;
+    public float BossDamageMulti = 3f;
+    public float BossSpeedMulti = 1.2f;
+    public float BossScaleMulti = 1.8f;
+
+    [Header("Wave formula")]
+    public int BaseEnemyCount = 3;
+    public float LinearGrowth = 2f;
+    public float QuadraticGrowth = 0.3f;
+    public int MaxEnemyCount = 2000;
+
+    public int GetEnemyCount(int waveIndex)
+    {
+        if (waveIndex < 1)
+            return 0;
+        float w = waveIndex - 1;
+        int count = Mathf.RoundToInt(BaseEnemyCount + w * LinearGrowth + w * w * QuadraticGrowth);
+        return Mathf.Clamp(count, 1, MaxEnemyCount);
+    }
 
     [Header("Spawn positions")]
     public Vector3 EnemySpawnpoint = new Vector3(8f, 0f, 0f);
