@@ -18,6 +18,7 @@ public class GameHUB : MonoBehaviour
     [SerializeField] private TMP_Text _enemiesText;
     [SerializeField] private TMP_Text _waveText;
     [SerializeField] private TMP_Text _waveTimerText;
+    [SerializeField] private TMP_Text _nextWaveInfoText;
 
     [Header("Buttons")]
     [SerializeField] private Button _hireWarriorButton;
@@ -43,6 +44,8 @@ public class GameHUB : MonoBehaviour
         HandleEnemiesChanged();
         UpdateButtonStates();
         _waveText.text = $"Волна: 0 / {_config.TotalWaves}";
+        if (_nextWaveInfoText != null)
+            _nextWaveInfoText.text = "";
     }
 
     void Update()
@@ -53,6 +56,15 @@ public class GameHUB : MonoBehaviour
             _waveTimerText.text = remaining > 0f
                 ? $"До волны: {remaining:F1}"
                 : "";
+
+            int next = _waves.CurrentWave + 1;
+            if (next <= _config.TotalWaves)
+            {
+                var preview = _waves.GetWavePreview(next);
+                _nextWaveInfoText.text = preview.IsBoss
+                    ? $"Босс"
+                    : $"Следующая: {preview.EnemyCount} врагов";
+            }
         }
         else
         {

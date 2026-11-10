@@ -9,7 +9,7 @@ public struct WavePreview
     public bool IsBoss;
     public float HpMult;
     public float DamageMult;
-    public float SpeedMilt;
+    public float SpeedMult;
     public float ScaleMult;
 }
 
@@ -76,7 +76,7 @@ public class WaveSystem : MonoBehaviour
 
         for (int i = 0; i < count; i++)
         {
-            var enemy = _factory.SpawnEnemy(preview.HpMult, preview.DamageMult, preview.SpeedMilt, preview.ScaleMult);
+            var enemy = _factory.SpawnEnemy(preview.HpMult, preview.DamageMult, preview.SpeedMult, preview.ScaleMult);
             _aliveEnemiesThisWave++;
             enemy.OnDied += HandleEnemyDied;
 
@@ -92,6 +92,34 @@ public class WaveSystem : MonoBehaviour
 
     public WavePreview GetWavePreview(int waveIndex)
     {
-        
+        if (waveIndex < 1 || waveIndex > _config.TotalWaves)
+            return default;
+
+        bool isBoss = waveIndex % _config.BossWaveInterval == 0;
+        int count = isBoss ? _config.BossCount : _config.GetEnemyCount(waveIndex - 1);
+
+        float hpMult = 1f + (waveIndex - 1) * _enemyConfig.HpScalePerWave;
+        float dmgMult = 1f + (waveIndex - 1) * _enemyConfig.DamageScalePerWave;
+        float spdMult = 1f + (waveIndex - 1) * _enemyConfig.SpeedScalePerWave;
+        float scaleMult = 1f;
+
+        if (isBoss)
+        {
+            hpMult *= _config.BossHpMulti;
+            dmgMult *= _config.BossDamageMulti;
+            spdMult *= _config.BossSpeedMulti;
+            scaleMult = _config.BossScaleMulti;
+        }
+
+        return new WavePreview
+        {
+            WaveNumber = waveIndex,
+            EnemyCount = count,
+            IsBoss = isBoss,
+            HpMult = hpMult,
+            DamageMult = dmgMult,
+            SpeedMult = spdMult,
+            ScaleMult = scaleMult
+        };
     }
 }

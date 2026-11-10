@@ -15,11 +15,14 @@ public class PopupController : MonoBehaviour
     [SerializeField] private GameObject _pausePanel;
     [SerializeField] private GameObject _victoryPanel;
     [SerializeField] private GameObject _defeatPanel;
-
+    [SerializeField] private GameObject _milestonePanel;
+   
     [Header("Victory stats")]
     [SerializeField] private TMP_Text _victoryStatsText;
     [Header("Defeat stats")]
     [SerializeField] private TMP_Text _defeatStatsText;
+    [Header("Milestone")]
+    [SerializeField] private TMP_Text _milestoneText;
 
     [Header("Buttons")]
     [SerializeField] private Button _startButton;
@@ -27,6 +30,7 @@ public class PopupController : MonoBehaviour
     [SerializeField] private Button _restartPauseButton;
     [SerializeField] private Button _restartVictoryButton;
     [SerializeField] private Button _restartDefeatButton;
+    [SerializeField] private Button _continueMilestoneButton;
 
     void Start()
     {
@@ -37,6 +41,7 @@ public class PopupController : MonoBehaviour
         _restartPauseButton.onClick.AddListener(RestartGame);
         _restartVictoryButton.onClick.AddListener(RestartGame);
         _restartDefeatButton.onClick.AddListener(RestartGame);
+        _continueMilestoneButton.onClick.AddListener(() => _gameManager.ContinueMilestone());
 
         HandleStateChanged(_gameManager.State);
     }
@@ -72,6 +77,12 @@ public class PopupController : MonoBehaviour
                     _defeatStatsText.text = $"Деревня пала на волне {GetCurrentWave()}";
                 break;
 
+            case GameState.Milestone: 
+                _milestonePanel.SetActive(true);
+                if (_milestonePanel != null && _waves != null)
+                    _milestoneText.text = $"Волна {_waves.CurrentWave} пройдена!";
+                break;
+
         }
     }
 
@@ -81,6 +92,7 @@ public class PopupController : MonoBehaviour
         _pausePanel.SetActive(false);
         _victoryPanel.SetActive(false);
         _defeatPanel.SetActive(false);
+        _milestonePanel.SetActive(false);
     }
 
     private int GetCurrentWave()
