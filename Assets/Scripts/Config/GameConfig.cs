@@ -53,4 +53,8 @@ public class GameConfig : ScriptableObject
     public Vector3 PeasantSpawnPoint = new Vector3(-5f, -2f, 0f);
     public Vector3 WarriorSpawnPoint = new Vector3(-5f, 2f, 0f);
     public float SpawnJitterRadius = 0.5f;
+
+    [Header("Random events")]
+    public float EventIntervalSeconds = 30f;
+    public float EventChance = 0.5f;
 }
