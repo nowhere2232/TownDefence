@@ -41,7 +41,7 @@ public class PopupController : MonoBehaviour
         _restartPauseButton.onClick.AddListener(RestartGame);
         _restartVictoryButton.onClick.AddListener(RestartGame);
         _restartDefeatButton.onClick.AddListener(RestartGame);
-        _continueMilestoneButton.onClick.AddListener(() => _gameManager.ContinueMilestone());
+        _continueMilestoneButton.onClick.AddListener(() => _gameManager.ContinueAfterMilestone());
 
         HandleStateChanged(_gameManager.State);
     }

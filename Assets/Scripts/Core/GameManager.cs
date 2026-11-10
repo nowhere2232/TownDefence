@@ -29,7 +29,6 @@ public class GameManager : MonoBehaviour
     {
         if (State != GameState.Start)
             return;
-        Time.timeScale = 1f;
         SetState(GameState.Playing);
     }
 
@@ -38,7 +37,6 @@ public class GameManager : MonoBehaviour
         if (State != GameState.Playing)
             return;
         SetState(GameState.Paused);
-        Time.timeScale = 0f;
     }
 
     public void EnterMilestone()
@@ -46,14 +44,12 @@ public class GameManager : MonoBehaviour
         if (State != GameState.Playing)
             return;
         SetState(GameState.Milestone);
-        Time.timeScale = 0f;
     }
 
-    public void ContinueMilestone()
+    public void ContinueAfterMilestone()
     {
         if (State != GameState.Milestone) 
             return;
-        Time.timeScale = 1f;
         SetState(GameState.Playing);
     }
 
@@ -62,7 +58,6 @@ public class GameManager : MonoBehaviour
         if (State != GameState.Paused)
             return;
         SetState(GameState.Playing);
-        Time.timeScale = 1f;
     }
 
     public void EndGame(GameState result)
@@ -70,12 +65,10 @@ public class GameManager : MonoBehaviour
         if (State == GameState.Victory || State == GameState.Defeat)
             return;
         SetState(result);
-        Time.timeScale = 0f;
     }
 
     public void Restart()
     {
-        Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 

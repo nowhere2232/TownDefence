@@ -69,6 +69,13 @@ public class GameHUB : MonoBehaviour
         else
         {
             _waveTimerText.text = "";
+            if (_waves.CurrentWave >= 1 && _waves.CurrentWave <= _config.TotalWaves)
+            {
+                var preview = _waves.GetWavePreview(_waves.CurrentWave);
+                _nextWaveInfoText.text = preview.IsBoss
+                    ? $"Босс"
+                    : $"Волна {preview.WaveNumber} | {preview.EnemyCount} врагов";
+            }
         }
     }
 
