@@ -10,6 +10,7 @@ public class GameHUB : MonoBehaviour
     [SerializeField] private HiringSystem _hiring;
     [SerializeField] private WaveSystem _waves;
     [SerializeField] private GameManager _gameManager;
+	[SerializeField] private RandomEventSystem _events;
 
     [Header("Texts")]
     [SerializeField] private TMP_Text _wheatText;
@@ -19,11 +20,14 @@ public class GameHUB : MonoBehaviour
     [SerializeField] private TMP_Text _waveText;
     [SerializeField] private TMP_Text _waveTimerText;
     [SerializeField] private TMP_Text _nextWaveInfoText;
+	[SerializeField] private TMP_Text _eventText;
 
     [Header("Buttons")]
     [SerializeField] private Button _hireWarriorButton;
     [SerializeField] private Button _hirePeasantButton;
     [SerializeField] private Button _pauseButton;
+	
+	private Coroutine _eventNotifyRoutine;
 
     void Start()
     {
@@ -34,6 +38,7 @@ public class GameHUB : MonoBehaviour
         _waves.OnWaveStarted += HandleWaveStarted;
         _waves.OnWaveCleared += HandleWaveCleared;
         _gameManager.OnStateChanged += HandleStateChanged;
+		_events.OnEventTriggered += HandleRandomEvent;
 
         _hireWarriorButton.onClick.AddListener(OnHireWarriorClicked);
         _hirePeasantButton.onClick.AddListener(OnHirePeasantClicked);
@@ -127,6 +132,46 @@ public class GameHUB : MonoBehaviour
         _hirePeasantButton.interactable = playing && _hiring.CanHire(UnitType.Peasant);
         _pauseButton.interactable = playing;
     }
+	
+	private void HandleRandomEvent(RandomEventConfig evt)
+	{
+		if (_eventNotifyRoutine != null)
+			StopCoroutine(_eventNotifyRoutine);
+		_eventNotifyRoutine = StartCoroutine(NotifyRoutine(evt));
+	}
+	
+	private System.Collections.IEnumerator NotifyRoutine(RandomEventConfig evt)
+	{
+		string sign = IsPositive(evt.Type) ? "+" : "-";
+		_eventText.text = $"{sign} {evt.DisplayName}";
+		_eventText.color = IsPositive(evt.Type) ? Color.black : new Color(0.55f, 0f, 0f);
+		
+		float t = 0f;
+		while (t < 0.3f)
+		{
+			t += Time.unscaledDeltaTime;
+			var c = _eventText.color;
+			c.a = Mathf.Lerp(0f, 1f, t / 0.3f);
+			_eventText.color = c;
+			yield return null;
+		}
+		
+		yield return new WaitForSecondsRealtime(2.5f);
+		
+		t = 0f;
+		while (t < 0.5f)
+		{
+			t += Time.unscaledDeltaTime;
+			var c = _eventText.color;
+			c.a = Mathf.Lerp(1f, 0f, t / 0.5f);
+			_eventText.color = c;
+			yield return null;
+		}
+		
+		_eventNotifyRoutine = null;
+	}
+	
+	private bool IsPositive(EventType type) => type == EventType.Harvest || type == EventType.Caravan;
 
     private void OnHireWarriorClicked() => _hiring.TryHire(UnitType.Warrior);
     private void OnHirePeasantClicked() => _hiring.TryHire(UnitType.Peasant);
